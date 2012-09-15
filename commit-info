@@ -1,0 +1,8 @@
+-*- mode: org -*-
+#+STARTUP: showeverything
+* CHANGES
+** initial commit
+
+* TODO
+- [ ] heavy refactoring
+- [ ] write tests
