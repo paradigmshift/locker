@@ -5,10 +5,10 @@
 
 ;;; "locker" goes here. Hacks and glory await!
 
-;;; needs prompt for passphrase
-;;; if txt includes lisp code it must be wrapped in a format form
+(sb-alien:define-alien-routine getpass sb-alien:c-string (prompt sb-alien:c-string))
+
 (defun pass-prompt ()
-  (write-to-string (read (force-output (format t "passphrase: ")))))
+   (getpass "passphrase: "))
 
 (defun write-file (txt fname encode)
   (with-open-file (out fname
