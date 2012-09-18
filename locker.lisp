@@ -43,12 +43,6 @@
        collect (string-trim " "(subseq str x y))
        while y))
 
-(defun split-space (str)
-  (loop for x = 0 then (1+ y)
-       as y = (position #\Space str :start x)
-       collect (string-trim " "(subseq str x y))
-       while y))
-
 (defun sanitize (str)
   ;; splits the string into nested headers and entries
   ;; removes empty lists and empty elements in lists
@@ -100,6 +94,3 @@
                                                                    contents)))))
           ((string-equal "encrypt" arg1) (write-file (open-file arg2 nil) arg2 t))
           (t (format t "USAGE ~% edit <filename> -- unencrypts the file, passes the contents to an emacs instance. Once editing is done please remember to save the file under the same name, otherwise the changes will be saved in plaintext. File will be encrypted after exiting.")))))
-
-(defun create-arg (lst)
-  (format nil "~{~a~}" lst))

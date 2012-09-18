@@ -1,7 +1,8 @@
 -*- mode: org -*-
 #+STARTUP: showeverything
 * CHANGES
-** implemented no echo for password input
+** wrote README.md and DOCS.md
+** removed legacy code
 
 * TODO
 - [ ] heavy refactoring
