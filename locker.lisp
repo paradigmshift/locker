@@ -66,13 +66,33 @@
         (cons (intern (car lst)) (list (parse-entries (cdr lst))))
         (cons (intern (car lst)) (parse-entries (cdr lst))))))
 
-(defun access (obj lst)
+(defun hsearch (obj lst)
+  ;; header search
   (let ((query (string-upcase obj)))
     (assoc (intern query) lst)))
 
 (defun show (obj lst)
-  (format t "~a~%~{~a~%~}~%" (car (access obj lst))
-          (cadr (access obj lst))))
+  (format t "~{~a~%~}~%" (cadr (hsearch obj lst))))
+
+(defun ishow (lst)
+  (format t "~{~a~%~}~%" lst))
+
+(defun isearch (obj lst)
+  (let ((results nil))
+    (mapcar (lambda (el)
+              (if (search (string-upcase obj) el)
+                  (push el results)))
+            lst)
+    results))
+
+(defun item-list (mainlst)
+  (let ((item-lst nil))
+    (mapcar (lambda (alst)
+              (mapcar (lambda (el)
+                        (push (string el) item-lst))
+                      (cadr alst)))
+            mainlst)
+    item-lst))
 
 (defun edit-file (fname)
   ;; opens a file in emacs, then encrypts it once emacs exits. remember to save the file!
@@ -83,14 +103,30 @@
       (sb-ext:run-program "/usr/bin/emacs" (list "--eval" args))
       (write-file (open-file fname nil) fname t))))
 
+(defun load-contents ()
+  (mapcar #'parse-entries (sanitize (open-file (nth (1- (length cl-user::*posix-argv*))
+                                                    cl-user::*posix-argv*)
+                                               t))))
+
 (defun toplevel ()
   (let ((arg1 (nth 1 cl-user::*posix-argv*))
         (arg2 (nth 2 cl-user::*posix-argv*))
         (arg-num (length cl-user::*posix-argv*)))
     (cond ((string-equal "edit" arg1) (edit-file arg2))
           ((string-equal "show" arg1) (progn
-                                        (let ((contents (mapcar #'parse-entries (sanitize (open-file (nth (1- arg-num) cl-user::*posix-argv*) t)))))
-                                               (force-output (show (concatenate 'string "* " (string-trim " " (format nil "~{~a ~}" (subseq cl-user::*posix-argv* 2 (- arg-num 1)))))
-                                                                   contents)))))
+                                        (let ((contents (load-contents)))
+                                          (force-output (show (concatenate 'string "* " (string-trim " " (format nil "~{~a ~}" (subseq cl-user::*posix-argv* 2 (- arg-num 1)))))
+                                                              contents)))))
+          ((string-equal "find" arg1) (progn
+                                        (let* ((contents (load-contents))
+                                               (query (string-trim " " (format nil "~{~a ~}" (subseq cl-user::*posix-argv* 2 (- arg-num 1)))))
+                                               (results (isearch query (item-list contents))))
+                                          (force-output (ishow results)))))
           ((string-equal "encrypt" arg1) (write-file (open-file arg2 nil) arg2 t))
           (t (format t "USAGE ~% edit <filename> -- unencrypts the file, passes the contents to an emacs instance. Once editing is done please remember to save the file under the same name, otherwise the changes will be saved in plaintext. File will be encrypted after exiting.")))))
+
+(defun dummy-data ()
+  (defparameter *test* (load-contents)))
+
+
+

@@ -1,9 +1,11 @@
 -*- mode: org -*-
 #+STARTUP: showeverything
 * CHANGES
-** wrote README.md and DOCS.md
-** removed legacy code
+** added find function for specific item queries
+** changed access funciton name to hsearch
 
 * TODO
+- [ ] change "show" code in toplevel function, follow "find" pattern
+- [ ] consolidate "show" and "find" printing functions
 - [ ] heavy refactoring
 - [ ] write tests
