@@ -108,12 +108,12 @@
     item-lst))
 
 (defun show (lst)
-  (format t "~{~a~%~}~%" lst))
+  (format t "~%~{~a~%~}~%" lst))
 
 ;;;; Command line functions
 
 (defun take-args ()
-  (string-trim " " (format nil "~%~{~a ~}" (subseq cl-user::*posix-argv* 2 (- (length cl-user::*posix-argv*) 1)))))
+  (string-trim " " (format nil "~{~a ~}" (subseq cl-user::*posix-argv* 2 (- (length cl-user::*posix-argv*) 1)))))
 
 (defun toplevel ()
   (let ((arg1 (nth 1 cl-user::*posix-argv*))
