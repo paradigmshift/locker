@@ -1,12 +1,9 @@
 -*- mode: org -*-
 #+STARTUP: showeverything
 * CHANGES
-** "show" code in toplevel function refactored
-** "show" and "find" pretty printing functions consolidated
+** take-args bug fixed
 
 * TODO
-- [X] change "show" code in toplevel function, follow "find" pattern
-- [X] consolidate "show" and "find" printing functions
 - [ ] write pretty printer for usage strings
 - [ ] write usage strings
 - [ ] write tests
