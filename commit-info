@@ -1,11 +1,12 @@
 -*- mode: org -*-
 #+STARTUP: showeverything
 * CHANGES
-** added find function for specific item queries
-** changed access funciton name to hsearch
+** "show" code in toplevel function refactored
+** "show" and "find" pretty printing functions consolidated
 
 * TODO
-- [ ] change "show" code in toplevel function, follow "find" pattern
-- [ ] consolidate "show" and "find" printing functions
-- [ ] heavy refactoring
+- [X] change "show" code in toplevel function, follow "find" pattern
+- [X] consolidate "show" and "find" printing functions
+- [ ] write pretty printer for usage strings
+- [ ] write usage strings
 - [ ] write tests
