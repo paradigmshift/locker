@@ -1,9 +1,10 @@
 -*- mode: org -*-
 #+STARTUP: showeverything
 * CHANGES
-** take-args bug fixed
+** pretty printer for usage strings implemented
+** usage strings written
 
 * TODO
-- [ ] write pretty printer for usage strings
-- [ ] write usage strings
+- [X] write pretty printer for usage strings
+- [X] write usage strings
 - [ ] write tests
