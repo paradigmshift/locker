@@ -1,10 +1,8 @@
 -*- mode: org -*-
 #+STARTUP: showeverything
 * CHANGES
-** pretty printer for usage strings implemented
-** usage strings written
+** ltk-gui version created
 
 * TODO
-- [X] write pretty printer for usage strings
-- [X] write usage strings
+- [ ] Transfer common code from locker and ltk-locker to separate file, load from there
 - [ ] write tests
