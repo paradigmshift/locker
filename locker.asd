@@ -5,7 +5,10 @@
   :description "Describe locker here"
   :author "Your Name <your.name@example.com>"
   :license "Specify license here"
-  :depends-on (#:salt-n-pepper)
+  :depends-on (#:salt-n-pepper
+               #:ltk)
   :components ((:file "package")
-               (:file "locker")))
+               (:file "locker")
+               (:file "common-functions")
+               (:file "locker-ltk")))
 
