@@ -16,6 +16,12 @@
                         collect line)))
       (string-upcase (salt-n-pepper:code-decode pass (car coded-seq))))))
 
+(defun write-file (txt fname pass)
+  (with-open-file (out fname
+                       :direction :output
+                       :if-exists :supersede)
+    (print (salt-n-pepper:code-decode pass txt) out)))
+
 (defun show (lst)
   (format nil "~%~{~a~%~}~%" lst))
 
@@ -50,7 +56,16 @@
            (pass-entry (make-instance 'entry
                                       :master pass-fr
                                       :show "*"))
-           (bt1 (make-instance 'button
+           (encrypt-bt (make-instance 'button
+                                      :text "encrypt"
+                                      :command (lambda ()
+                                                 (let ((fname (string-trim " " (text fname-entry)))
+                                                       (pass (text pass-entry))
+                                                       (doc (text display)))
+                                                   (write-file doc fname pass)))
+                                      :master bt-fr))
+             
+           (read-bt (make-instance 'button
                                :text "read"
                                :command (lambda ()
                                           (let ((fname (string-trim " " (text fname-entry)))
@@ -68,19 +83,19 @@
                                                         (t (format nil "~%USAGE~%~%~{~{~<~%~1,80:;~A~> ~}~%~%~}" (mapcar #'split-space (list (show-usage-string)
                                                                                                                                              (find-usage-string)
                                                                                                                                              (show-all-usage-string)))))))))
-                               
                                :master bt-fr)))
 
-      (pack fname-fr)
-      (pack filter-fr)
-      (pack pass-fr)
-      (pack bt-fr)
-      (pack disp-fr)
+      (pack fname-fr :ipadx 375 :pady 0)
+      (pack filter-fr :ipadx 388 :pady 0)
+      (pack pass-fr :ipadx 387 :pady 0)
+      (pack bt-fr :ipadx 400 :pady 0)
+      (pack disp-fr :ipadx 200 :pady 0)
+      (pack display :side :left)
+      (pack fname-entry :side :left)
+      (pack filter-entry :side :left)
+      (pack pass-entry :side :left)
       (pack fname-lb :side :left)
       (pack filter-lb :side :left)
       (pack pass-lb :side :left)
-      (pack display)
-      (pack fname-entry)
-      (pack filter-entry)
-      (pack pass-entry)
-      (pack bt1))))
+      (pack read-bt :side :left)
+      (pack encrypt-bt :side :left))))
