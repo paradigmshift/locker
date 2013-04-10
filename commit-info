@@ -1,9 +1,7 @@
 -*- mode: org -*-
 #+STARTUP: showeverything
 * CHANGES
-** code re-arranged, common functions to both CLI and GUI versions moved to file called common-functions.lisp
-** package and package definitions done  in .asd and package.lisp files
+** Refactoring and further movement of code to common-function.lisp
 
 * TODO
-- [X] Transfer common code from locker and ltk-locker to separate file, load from there
 - [ ] write tests

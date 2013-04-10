@@ -2,8 +2,8 @@
 
 (asdf:defsystem #:locker
   :serial t
-  :description "Describe locker here"
-  :author "Your Name <your.name@example.com>"
+  :description "Encrypts and allows access to encrypted files."
+  :author "Mozart Reina <mozart@mozartreina.com>"
   :license "Specify license here"
   :depends-on (#:salt-n-pepper
                #:ltk)
