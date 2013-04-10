@@ -1,3 +1,43 @@
+(in-package #:common-functions)
+
+;;;; File IO
+
+(sb-alien:define-alien-routine getpass sb-alien:c-string (prompt sb-alien:c-string))
+
+(defun pass-prompt ()
+   (getpass "passphrase: "))
+
+(defun write-file (txt fname pass)
+  (with-open-file (out fname
+                       :direction :output
+                       :if-exists :supersede)
+    (print (code-decode pass txt) out)))
+
+(defmacro open-file (cli fname decode)
+  (if cli
+      `(let ((decode ,decode))
+         (with-open-file (in ,fname
+                             :direction :input)
+           (if decode
+               (let ((coded-seq (loop
+                                   for line = (read in nil 'eof)
+                                   until (eq line 'eof)
+                                   collect line)))
+                 (string-upcase (code-decode (pass-prompt) (car coded-seq))))
+               (let ((ucoded-seq (make-string (file-length in))))
+                 (read-sequence ucoded-seq in)
+                 (string-upcase ucoded-seq)))))
+      `(with-open-file (in ,fname
+                           :direction :input)
+         (let ((coded-seq (loop
+                             for line = (read in nil 'eof)
+                             until (eq line 'eof)
+                             collect line)))
+           (string-upcase (salt-n-pepper:code-decode ,decode (car coded-seq)))))))
+
+(defun show (lst)
+  (format t "~%~{~a~%~}~%" lst))
+
 ;;;; Data manipulation for internal representation
 
 (defun split-header (str)
@@ -26,7 +66,6 @@
 ;;; splits the string into nested headers and entries
 ;;; removes empty lists and empty elements in lists
 (defun sanitize (str)
-
   (mapcar #'remove-empty-entries
           (remove-empty-lst (mapcar #'split-newline (split-header str)))))
 
@@ -69,6 +108,20 @@
                       (cadr alst)))
             mainlst)
     item-lst))
+
+;;; loads and cleans the file, fname and pass used in gui, terminal calls from posix
+(defun load-contents (&optional fname pass)
+  (if fname
+      (mapcar #'parse-entries (sanitize (open-file nil fname pass)))
+      (mapcar #'parse-entries (sanitize (open-file 'cli (nth (1- (length cl-user::*posix-argv*))
+                                                        cl-user::*posix-argv*)
+                                                   t)))))
+
+(defmacro display (contents query &body body)
+  `(progn
+     (let* ((contents ,contents)
+            (query ,query))
+       ,@body)))
 
 (defun show-usage-string ()
   "show <tag> <filename> -- Unencrypts the file and displays all entries under the tag. Tags are denoted by the '*' followed by a space and the tag name.")

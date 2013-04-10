@@ -1,30 +1,5 @@
 (in-package #:locker-gui)
 
-;;; load functions common to both locker (CLI version) and locker-gui
-(load (merge-pathnames "common-functions.lisp"
-                       (asdf:system-source-directory :locker)))
-
-(defun load-contents (fname pass)
-  (mapcar #'parse-entries (sanitize (open-file fname pass))))
-
-(defun open-file (fname pass)
-  (with-open-file (in fname
-                      :direction :input)
-    (let ((coded-seq (loop
-                        for line = (read in nil 'eof)
-                        until (eq line 'eof)
-                        collect line)))
-      (string-upcase (salt-n-pepper:code-decode pass (car coded-seq))))))
-
-(defun write-file (txt fname pass)
-  (with-open-file (out fname
-                       :direction :output
-                       :if-exists :supersede)
-    (print (salt-n-pepper:code-decode pass txt) out)))
-
-(defun show (lst)
-  (format nil "~%~{~a~%~}~%" lst))
-
 (defmacro display (contents query &body body)
   `(progn
      (let* ((contents ,contents)
