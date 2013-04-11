@@ -1,5 +1,10 @@
 (in-package #:common-functions)
 
+(defmacro display (((contents-var contents) (query-var query)) &body body)
+     `(let* ((,contents-var ,contents)
+             (,query-var ,query))
+        ,@body))
+
 ;;;; File IO
 
 (sb-alien:define-alien-routine getpass sb-alien:c-string (prompt sb-alien:c-string))
@@ -37,6 +42,9 @@
 
 (defun show (lst)
   (format t "~%~{~a~%~}~%" lst))
+
+(defun show-gui (lst)
+  (format nil "~%~{~a~%~}~%" lst))
 
 ;;;; Data manipulation for internal representation
 
@@ -117,11 +125,10 @@
                                                         cl-user::*posix-argv*)
                                                    t)))))
 
-(defmacro display (contents query &body body)
-  `(progn
-     (let* ((contents ,contents)
-            (query ,query))
-       ,@body)))
+(defmacro display (((contents-var contents) (query-var query)) &body body)
+     `(let* ((,contents-var ,contents)
+             (,query-var ,query))
+        ,@body))
 
 (defun show-usage-string ()
   "show <tag> <filename> -- Unencrypts the file and displays all entries under the tag. Tags are denoted by the '*' followed by a space and the tag name.")

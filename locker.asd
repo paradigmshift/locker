@@ -8,7 +8,7 @@
   :depends-on (#:salt-n-pepper
                #:ltk)
   :components ((:file "package")
-               (:file "locker")
                (:file "common-functions")
+               (:file "locker")
                (:file "locker-ltk")))
 

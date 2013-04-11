@@ -1,7 +1,8 @@
 -*- mode: org -*-
 #+STARTUP: showeverything
 * CHANGES
-** Refactoring and further movement of code to common-function.lisp
+** fixed display macro definition
+** fixed gui bug that prevented show and find from displaying info on screen
 
 * TODO
 - [ ] write tests
