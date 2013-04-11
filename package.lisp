@@ -7,7 +7,7 @@
   (:export #:write-file
            #:open-file
            #:show
-           #:show
+           #:show-gui
            #:split-header
            #:split-newline
            #:remove-empty-lst
@@ -62,8 +62,7 @@
   (:shadowing-import-from #:common-functions
                           #:write-file
                           #:open-file
-                          #:show
-                          #:show
+                          #:show-gui
                           #:split-header
                           #:split-newline
                           #:remove-empty-lst

@@ -2,12 +2,6 @@
 
 (in-package #:locker)
 
-(defmacro display (contents query &body body)
-  `(progn
-     (let* ((contents ,contents)
-            (query ,query))
-       ,@body)))
-
 (defun edit-file (fname)
   ;; opens a file in emacs, then encrypts it once emacs exits. remember to save the file!
   (with-open-file (in fname
@@ -27,18 +21,21 @@
         (arg2 (nth 2 cl-user::*posix-argv*))
         (arg-num (length cl-user::*posix-argv*)))
     (cond ((string-equal "edit" arg1) (edit-file arg2))
-          ((string-equal "show" arg1) (display (load-contents) (concatenate 'string "* " (take-args))
-                                        (force-output (show (cadr (hsearch query contents))))))
-          ((string-equal "find" arg1) (display (load-contents) (take-args)
-                                        (force-output (show (isearch query (item-list contents))))))
-          ((string-equal "show-all" arg1) (display (load-contents) nil
-                                            (format t "~%~{~{~a~%~{~a~%~}~}~%~}~%" contents)))
+          ((string-equal "show" arg1) (display ((contents (load-contents))
+                                                (query (concatenate 'string "* " (take-args))))
+                                               (force-output (show (cadr (hsearch query contents))))))
+          ((string-equal "find" arg1) (display ((contents (load-contents))
+                                                (query (take-args)))
+                                               (force-output (show (isearch query (item-list contents))))))
+          ((string-equal "show-all" arg1) (display ((contents (load-contents))
+                                                    (query nil))
+                                                   (format t "~%~{~{~a~%~{~a~%~}~}~%~}~%" contents)))
           ((string-equal "encrypt" arg1) (write-file (open-file 'cli arg2 nil) arg2 t))
           (t (format t "~%USAGE~%~%~{~{~<~%~1,80:;~A~> ~}~%~%~}" (mapcar #'split-space (list (edit-usage-string)
-                                                                                  (show-usage-string)
-                                                                                  (find-usage-string)
-                                                                                  (show-all-usage-string)
-                                                                                  (encrypt-usage-string))))))))
+                                                                                             (show-usage-string)
+                                                                                             (find-usage-string)
+                                                                                             (show-all-usage-string)
+                                                                                             (encrypt-usage-string))))))))
 
 (defun edit-usage-string ()
   "edit <filename> -- Unencrypts the file and passes the contents to an emacs instance. Once editing is done save the file under the same name otherwise the file will be saved unencrypted. A new passphrase for encryption will be asked upon exiting (this happens at the shell, not in the emacs instance).")
