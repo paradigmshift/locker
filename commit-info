@@ -1,8 +1,7 @@
 -*- mode: org -*-
 #+STARTUP: showeverything
 * CHANGES
-** fixed display macro definition
-** fixed gui bug that prevented show and find from displaying info on screen
+** added FreeBSD License
 
 * TODO
 - [ ] write tests
