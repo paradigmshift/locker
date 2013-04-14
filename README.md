@@ -55,6 +55,10 @@ This is meant to be used by saving a core image file with the code already loade
 
 `locker show <header> <filename>` - searches the filename for matching headers
 
+`locker show-all <filename>` - shows the whole file
+
+`locker find <query> <filename>` - matches the query to a specific word in each entry (fuzzy search)
+
 `locker encrypt <filename>` - encrypts a plaintext file
 
 ### Text File instructions
