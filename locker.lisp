@@ -14,7 +14,18 @@
 ;;;; Command line functions
 
 (defun take-args ()
-  (string-trim " " (format nil "~{~a ~}" (subseq cl-user::*posix-argv* 2 (- (length cl-user::*posix-argv*) 1)))))
+  "Retrieve query arguments"
+  (when (> (length cl-user::*posix-argv*) 2)
+    (remove-file (string-trim " " (format nil "~{~a ~}" (subseq cl-user::*posix-argv* 2))))))
+  ;; (string-trim " " (format nil "~{~a ~}" (subseq
+;; cl-user::*posix-argv* 2 (- (length cl-user::*posix-argv*) 1)))))
+
+(defun remove-file (str)
+  "Removes the filename at the end of the argument list if present "
+  (let ((args (split-space str)))
+    (if (probe-file (first (last args)))
+        (first (subseq args 0 (1- (length args))))
+        str)))
             
 (defun toplevel ()
   (let ((arg1 (nth 1 cl-user::*posix-argv*))
@@ -29,25 +40,15 @@
                                                (force-output (show (isearch query (item-list contents))))))
           ((string-equal "show-all" arg1) (display ((contents (load-contents))
                                                     (query nil))
-                                                   (format t "~%~{~{~a~%~{~a~%~}~}~%~}~%" contents)))
+                                            (force-output (format t "~%~{~{~a~%~{~a~%~}~}~%~}~%" contents))))
           ((string-equal "encrypt" arg1) (write-file (open-file 'cli arg2 nil) arg2 t))
-          (t (format t "~%USAGE~%~%~{~{~<~%~1,80:;~A~> ~}~%~%~}" (mapcar #'split-space (list (edit-usage-string)
-                                                                                             (show-usage-string)
-                                                                                             (find-usage-string)
-                                                                                             (show-all-usage-string)
-                                                                                             (encrypt-usage-string))))))))
-
-(defun edit-usage-string ()
-  "edit <filename> -- Unencrypts the file and passes the contents to an emacs instance. Once editing is done save the file under the same name otherwise the file will be saved unencrypted. A new passphrase for encryption will be asked upon exiting (this happens at the shell, not in the emacs instance).")
-
-
-
-(defun encrypt-usage-string ()
-  "encrypt <filename> -- Encrypts the file. Be sure to use this only on a plaintext file, if used on an already encrypted file it will encrypt it again making it very hard to return it to a plaintext state.")
-
+          (t (main-usage-string)))))
 
 ;;;; Testing purposes
 (setf cl-user::*posix-argv* '("locker" "show-all" "~/dev/lisp/locker/test.txt"))
 
 (defun dummy-data ()
   (defparameter *test* (load-contents)))
+
+(defun set-posix (&rest args)
+  (setf cl-user::*posix-argv* args))

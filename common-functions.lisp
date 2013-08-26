@@ -119,16 +119,13 @@
 
 ;;; loads and cleans the file, fname and pass used in gui, terminal calls from posix
 (defun load-contents (&optional fname pass)
-  (if fname
-      (mapcar #'parse-entries (sanitize (open-file nil fname pass)))
-      (mapcar #'parse-entries (sanitize (open-file 'cli (nth (1- (length cl-user::*posix-argv*))
-                                                        cl-user::*posix-argv*)
-                                                   t)))))
-
-(defmacro display (((contents-var contents) (query-var query)) &body body)
-     `(let* ((,contents-var ,contents)
-             (,query-var ,query))
-        ,@body))
+  (cond (fname
+         (mapcar #'parse-entries (sanitize (open-file nil fname pass))))
+        ((probe-file (first (last cl-user::*posix-argv*)))
+         (mapcar #'parse-entries (sanitize (open-file 'cli (first (last cl-user::*posix-argv*)) t))))
+        ((check-rc "~/.lockerrc")
+         (mapcar #'parse-entries (sanitize (open-file 'cli (check-rc "~/.lockerrc") t))))
+        (t (main-usage-string))))
 
 (defun show-usage-string ()
   "show <tag> <filename> -- Unencrypts the file and displays all entries under the tag. Tags are denoted by the '*' followed by a space and the tag name.")
@@ -138,3 +135,49 @@
 
 (defun show-all-usage-string ()
   "show-all <filename> -- Unencrypts the file and displays all tags and entries.")
+
+
+;;;; RC file
+(defun slurpfile (fname)
+  "Slurp the contents of a file and return them as symbols"
+  (with-open-file (in fname
+                      :direction :input)
+    (let ((contents (loop
+                        for line = (read in nil 'eof)
+                        until (eq line 'eof)
+                        collect line)))
+      contents)))
+
+(defun check-rc (fname)
+  "Checks the existence of the rc file and retrieves the value of FILE if it exists"
+  (when (directory fname)
+    (let ((contents (mapcar #'(lambda (ln)
+                       (string ln))
+                   (slurpfile fname))))
+      (if (string= (first (split-equal (first contents))) "FILE")
+          (second (split-equal (first contents)))
+          nil))))
+
+(defun split-equal (contents)
+  (split #\= contents))
+
+(defun split (delimiter str)
+  (loop for x = 0 then (1+ y)
+     as y = (position `,delimiter str :start x)
+       collect (string-trim " " (subseq str x y))
+       while y))
+
+(defun main-usage-string ()
+  (format t "~%USAGE~%~%~{~{~<~%~1,80:;~A~> ~}~%~%~}" (mapcar #'split-space (list (edit-usage-string)
+                                                                                             (show-usage-string)
+                                                                                             (find-usage-string)
+                                                                                             (show-all-usage-string)
+                                                                                             (encrypt-usage-string)))))
+
+(defun edit-usage-string ()
+  "edit <filename> -- Unencrypts the file and passes the contents to an emacs instance. Once editing is done save the file under the same name otherwise the file will be saved unencrypted. A new passphrase for encryption will be asked upon exiting (this happens at the shell, not in the emacs instance).")
+
+
+
+(defun encrypt-usage-string ()
+  "encrypt <filename> -- Encrypts the file. Be sure to use this only on a plaintext file, if used on an already encrypted file it will encrypt it again making it very hard to return it to a plaintext state.")

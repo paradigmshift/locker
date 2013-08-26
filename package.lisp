@@ -21,6 +21,7 @@
            #:item-list
            #:load-contents
            #:display
+           #:main-usage-string
            #:show-usage-string
            #:find-usage-string
            #:show-all-usage-string))
@@ -45,6 +46,7 @@
                           #:item-list
                           #:load-contents
                           #:display
+                          #:main-usage-string
                           #:show-usage-string
                           #:find-usage-string
                           #:show-all-usage-string))
@@ -76,9 +78,7 @@
                           #:item-list
                           #:load-contents
                           #:display
+                          #:main-usage-string
                           #:show-usage-string
                           #:find-usage-string
                           #:show-all-usage-string))
-
-                          
-

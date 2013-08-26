@@ -1,7 +1,3 @@
--*- mode: org -*-
-#+STARTUP: showeverything
-* CHANGES
-** added FreeBSD License
+Added init file capability (~/.lockerrc)
 
-* TODO
 - [ ] write tests
