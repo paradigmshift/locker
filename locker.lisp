@@ -17,8 +17,6 @@
   "Retrieve query arguments"
   (when (> (length cl-user::*posix-argv*) 2)
     (remove-file (string-trim " " (format nil "~{~a ~}" (subseq cl-user::*posix-argv* 2))))))
-  ;; (string-trim " " (format nil "~{~a ~}" (subseq
-;; cl-user::*posix-argv* 2 (- (length cl-user::*posix-argv*) 1)))))
 
 (defun remove-file (str)
   "Removes the filename at the end of the argument list if present "

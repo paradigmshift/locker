@@ -16,11 +16,13 @@
            #:sanitize
            #:parse-entries
            #:split-space
+           #:split-equal
            #:hsearch
            #:isearch
            #:item-list
            #:load-contents
            #:display
+           #:slurpfile
            #:main-usage-string
            #:show-usage-string
            #:find-usage-string
@@ -31,6 +33,7 @@
   (:shadowing-import-from #:common-functions
                           #:write-file
                           #:open-file
+                          #:slurpfile
                           #:show
                           #:show
                           #:split-header
@@ -82,3 +85,6 @@
                           #:show-usage-string
                           #:find-usage-string
                           #:show-all-usage-string))
+
+(defpackage #:locker-tests
+  (:use #:cl #:lisp-unit #:common-functions #:locker))

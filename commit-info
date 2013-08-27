@@ -1,3 +1,8 @@
-Added init file capability (~/.lockerrc)
+Added some tests.
+
+Minor refactoring, replacing `car` with `first` and beginning
+minor clean up.
+
+Added some docstrings.
 
 - [ ] write tests

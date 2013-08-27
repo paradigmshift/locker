@@ -10,5 +10,6 @@
   :components ((:file "package")
                (:file "common-functions")
                (:file "locker")
+               (:file "locker-tests")
                (:file "locker-ltk")))
 
