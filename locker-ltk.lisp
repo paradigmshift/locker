@@ -53,7 +53,7 @@
                                                         ((string-equal filter "find")
                                                          (display ((contents (load-contents fname pass))
                                                                    (query s-query))
-                                                                  (show-gui (isearch query (item-list contents)))))
+                                                                  (show-gui (find-item query (item-list contents)))))
                                                         (t (format nil "~%USAGE~%~%~{~{~<~%~1,80:;~A~> ~}~%~%~}" (mapcar #'split-space (list (show-usage-string)
                                                                                                                                              (find-usage-string)
                                                                                                                                              (show-all-usage-string)))))))))
