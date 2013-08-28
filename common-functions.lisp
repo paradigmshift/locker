@@ -148,7 +148,7 @@
     (let ((contents (mapcar #'(lambda (ln)
                        (string ln))
                    (slurpfile fname))))
-      (if (string= (first (split-equal (first contents))) "FILE")
+      (if (equalp (first (split-equal (first contents))) "FILE")
           (second (split-equal (first contents)))
           nil))))
 

@@ -8,6 +8,7 @@
            #:open-file
            #:show
            #:show-gui
+           #:check-rc
            #:split-header
            #:split-newline
            #:remove-empty-lst
