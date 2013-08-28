@@ -17,8 +17,8 @@
            #:parse-entries
            #:split-space
            #:split-equal
-           #:hsearch
-           #:isearch
+           #:show-category
+           #:find-item
            #:item-list
            #:load-contents
            #:display
@@ -35,7 +35,6 @@
                           #:open-file
                           #:slurpfile
                           #:show
-                          #:show
                           #:split-header
                           #:split-newline
                           #:remove-empty-lst
@@ -44,8 +43,8 @@
                           #:sanitize
                           #:parse-entries
                           #:split-space
-                          #:hsearch
-                          #:isearch
+                          #:show-category
+                          #:find-item
                           #:item-list
                           #:load-contents
                           #:display
@@ -76,8 +75,8 @@
                           #:sanitize
                           #:parse-entries
                           #:split-space
-                          #:hsearch
-                          #:isearch
+                          #:show-category
+                          #:find-item
                           #:item-list
                           #:load-contents
                           #:display

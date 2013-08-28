@@ -43,29 +43,40 @@
 
 ;;;; Data manipulation for internal representation
 
-(defun split (delimiter str)
-  "Generic function that will split the given string on the delimiter"
+(defun split (delimiter collector str)
+  "Split the given string on the delimiter(s)"
   (loop for x = 0 then (1+ y)
-     as y = (position delimiter str :start x)
-       collect (string-trim " " (subseq str x y))
+       as y = (position delimiter str :start x)
+       collect (funcall collector x y)
        while y))
+
+(defun split-equal (str)
+  "Split on every '='"
+  (split #\= #'(lambda (x y)
+                 (string-trim " " (subseq str x y)))
+         str))
 
 (defun split-header (str)
-  "Splits the string according to the category markers. ex.('* banks bank1 bank2 ' '*docs doc1 doc2'"
-  (loop for x = 0 then (1+ y)
-       as y = (position #\* str :start x)
-       collect (subseq str (if (> x 0) (1- x) x) y)
-       while y))
+  "Split on every '*'"
+  (split #\* #'(lambda (x y)
+                 (string-trim " " (subseq str (if (> x 0) (1- x) x) y)))
+         str))
 
 (defun split-newline (str)
-  (split #\Newline str))
+  "Split on every newline"
+  (split #\Newline #'(lambda (x y)
+                       (string-trim " " (subseq str x y)))
+         str))
 
 (defun split-space (str)
-  (split #\Space str))
+  "Split on every space"
+  (split #\Space #'(lambda (x y)
+                     (string-trim " " (subseq str x y)))
+         str))
 
 (defun remove-empty-lst (lst)
   (loop for x in lst
-       when (> (length (car x)) 0)
+       when (> (length (first x)) 0)
        collect x))
 
 (defun remove-empty-entries (lst)
@@ -80,7 +91,7 @@
           (remove-empty-lst (mapcar #'split-newline (split-header str)))))
 
 (defun parse-entries (lst)
-  "Nests entries under the headers"
+  "Nests entries under the headers, headers are prefixed with '*'"
   (when (not (null lst))
     (if (char-equal (char (first lst) 0) #\*)
         (cons (intern (first lst)) (list (parse-entries (rest lst))))
@@ -88,28 +99,31 @@
 
 ;;;; Query functions
 
-(defun hsearch (obj lst)
+(defun show-category (q lst)
   "Shows all items under the header"
-  (let ((query (string-upcase obj)))
+  (let ((query (string-upcase q)))
     (assoc (intern query) lst)))
 
-(defun isearch (obj lst)
-  "Shows all items matching the query"
-  (let ((results nil))
-    (mapcar (lambda (el)
-              (if (search (string-upcase obj) el)
-                  (push el results)))
-            lst)
-    results))
+(defun find-item (query lst)
+  "Returns all items matching query"
+  (remove-if #'null  (mapcar (lambda (entry)
+                               (if (search (string-upcase query) entry)
+                                   entry))
+                             lst)))
 
-(defun item-list (mainlst)
-  (let ((item-lst nil))
-    (mapcar (lambda (alst)
-              (mapcar (lambda (el)
-                        (push (string el) item-lst))
-                      (cadr alst)))
-            mainlst)
-    item-lst))
+(defun item-list (lst)
+  "Returns a list of all items without their headers, list is in the form of '((category (item1 item2...))"
+  (map 'list #'string (append-items lst)))
+
+(defun append-items (parsed-entries)
+  "Takes a list of a-lists and appends their values into one list"
+  (apply #'append (mapcar #'(lambda (alst)
+                              (alist-val alst))
+                          parsed-entries)))
+
+(defun alist-val (alst)
+  "Takes the value of an a-list"
+  (second alst))
 
 (defun load-contents (&optional fname pass)
   "Loads the contents in the filename if provided, or in the filename provided by check-rc. Parameters are passed by the GUI, CLI retrieves the posix arguments."
@@ -152,8 +166,8 @@
           (second (split-equal (first contents)))
           nil))))
 
-(defun split-equal (str)
-  (split #\= str))
+;; (defun split-equal (str)
+;;   (split #\= str))
 
 (defun main-usage-string ()
   (format t "~%USAGE~%~%~{~{~<~%~1,80:;~A~> ~}~%~%~}" (mapcar #'split-space (list (edit-usage-string)
