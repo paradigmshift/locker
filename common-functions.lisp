@@ -18,22 +18,28 @@
                        :if-exists :supersede)
     (print (code-decode pass txt) out)))
 
-(defmacro open-file (cli fname decode)
-  (if cli
-      `(let ((decode ,decode))
-         (with-open-file (in ,fname
-                             :direction :input)
-           (if decode
-               (let ((contents (loop
-                                   for line = (read in nil 'eof)
-                                   until (eq line 'eof)
-                                   collect line)))
-                 (string-upcase (code-decode (pass-prompt) (first contents))))
-               (let ((ucoded-seq (make-string (file-length in))))
-                 (read-sequence ucoded-seq in)
-                 (string-upcase ucoded-seq)))))
-      `(let ((contents (slurpfile ,fname)))
-         (string-upcase (salt-n-pepper:code-decode ,decode (first contents))))))
+;; (defmacro open-file (cli fname decode)
+;;   (if cli
+;;       `(let ((decode ,decode))
+;;          (with-open-file (in ,fname
+;;                              :direction :input)
+;;            (if decode
+;;                (let ((contents (loop
+;;                                    for line = (read in nil 'eof)
+;;                                    until (eq line 'eof)
+;;                                    collect line)))
+;;                  (string-upcase (code-decode (pass-prompt) (first contents))))
+;;                (let ((ucoded-seq (make-string (file-length in))))
+;;                  (read-sequence ucoded-seq in)
+;;                  (string-upcase ucoded-seq)))))
+;;       `(let ((contents (slurpfile ,fname)))
+;;          (string-upcase (salt-n-pepper:code-decode ,decode (first contents))))))
+
+(defun open-file (cli fname decode)
+  (let ((contents (slurpfile `,fname)))
+    (if cli
+        (string-upcase (salt-n-pepper:code-decode (pass-prompt) (first contents)))
+        (string-upcase (salt-n-pepper:code-decode `,decode (first contents))))))
 
 (defun show (lst)
   (format t "~%~{~a~%~}~%" lst))
@@ -75,9 +81,10 @@
          str))
 
 (defun remove-empty-lst (lst)
-  (loop for x in lst
-       when (> (length (first x)) 0)
-       collect x))
+  "Removes empty association lists from lst"
+  (remove-if #'(lambda (alst)
+                 (funcall #'zero-length-p (first alst)))
+             lst))
 
 (defun remove-empty-entries (lst)
   (remove-if #'zero-length-p lst))
@@ -165,9 +172,6 @@
       (if (equalp (first (split-equal (first contents))) "FILE")
           (second (split-equal (first contents)))
           nil))))
-
-;; (defun split-equal (str)
-;;   (split #\= str))
 
 (defun main-usage-string ()
   (format t "~%USAGE~%~%~{~{~<~%~1,80:;~A~> ~}~%~%~}" (mapcar #'split-space (list (edit-usage-string)

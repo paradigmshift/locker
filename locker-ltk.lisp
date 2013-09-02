@@ -45,7 +45,7 @@
                                                   (cond ((string-equal filter "show")
                                                          (display ((contents (load-contents fname pass))
                                                                    (query (concatenate 'string "* " (string-trim " " s-query))))
-                                                                  (show-gui (cadr (hsearch query contents)))))
+                                                                  (show-gui (cadr (show-category query contents)))))
                                                         ((string-equal filter "show-all")
                                                          (display ((contents (load-contents fname pass))
                                                                    (query nil))

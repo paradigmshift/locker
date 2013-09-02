@@ -1,5 +1,6 @@
-Minor refactoring 
+Rewrote `open-file` in common-functions
 
-Added `check-rc` test
+Added `remove-empty-lst-tests` to tests
 
 TODO
+[ ] Replace `display` macro
