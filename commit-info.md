@@ -1,6 +1,4 @@
-Rewrote `open-file` in common-functions
-
-Added `remove-empty-lst-tests` to tests
+Reformatted `DOCS.md`
 
 TODO
 [ ] Replace `display` macro
