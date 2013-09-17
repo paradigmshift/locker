@@ -6,7 +6,10 @@ Data structure for the file is a simple associated list, with search being done 
 
 Editing the file is done by decrypting the contents of the file, calling an instance of emacs and passing the contents to a buffer called **encrypted**, and once the file has been saved, encrypting the file again with a new passphrase (you can use the old one if you like).
 
-Thanks to Xach, Nikodemus, and H4ns at #lisp for the help in navigating the more *esoteric* aspects of CL.
+Thanks to Xach, Nikodemus, and H4ns at #lisp for the help in
+navigating the more *esoteric* aspects of CL.
+
+[![endorse](https://api.coderwall.com/paradigmshift/endorsecount.png)](https://coderwall.com/paradigmshift)
 
 ### License
 
